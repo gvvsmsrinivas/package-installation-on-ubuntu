@@ -1,0 +1,55 @@
+root@ansible:/tmp# more package.yml
+---
+- name: apache package installation
+  hosts: all
+  tasks:
+    - name: update apt cache
+      apt:
+        update_cache: yes
+    - name: install apache2
+      apt:
+        name: apache2
+        state: present
+    - name: firewall
+      ufw:
+        port: tcp
+        state: enabled
+    - name: create directory index
+      file:
+        path: /var/www/html/index.html
+        mode: 0644
+        state: touch
+  handlers:
+    - name:
+      service:
+        name: apache2
+        state: restarted
+
+###############################################3
+
+
+
+root@ansible:/tmp# ansible-playbook package.yml -C
+
+PLAY [apache package installation] *************************************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************************************
+[WARNING]: Platform linux on host 192.168.29.2 is using the discovered Python interpreter at /usr/bin/python3.10, but future installation of another Python interpreter
+could change the meaning of that path. See https://docs.ansible.com/ansible-core/2.17/reference_appendices/interpreter_discovery.html for more information.
+ok: [192.168.29.2]
+
+TASK [update apt cache] ************************************************************************************************************************************************
+changed: [192.168.29.2]
+
+TASK [install apache2] *************************************************************************************************************************************************
+changed: [192.168.29.2]
+
+TASK [firewall] ********************************************************************************************************************************************************
+changed: [192.168.29.2]
+
+TASK [create directory index] ******************************************************************************************************************************************
+changed: [192.168.29.2]
+
+PLAY RECAP *************************************************************************************************************************************************************
+192.168.29.2               : ok=5    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
